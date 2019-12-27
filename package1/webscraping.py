@@ -8,6 +8,7 @@ from lxml import html
 import lxml.html as lh
 from bs4 import BeautifulSoup
 from acquisition import reading_csv
+import os.path
 
 df = pd.read_csv('cleaned')
 
@@ -42,13 +43,23 @@ def web_scraping_education(df_col):
             edu.append('Yes')
         else:
             edu.append('No')
+
+    edu_df = pd.DataFrame(np.array(edu))
+    edu_df.to_csv('edu_csv')
+
     return edu
 
-def webscraping(df, file):
-    df['education'] = web_scraping_education(df.name)
+def webscraping(file):
+    if os.path.exists('edu_csv'):
+        edu_data = pd.read_csv('edu_csv')
+        df['education'] = edu_data
 
-    df.drop('name', axis=1, inplace=True)
+    else:
+        print('This may take a few minutes ...')
+        df['education'] = web_scraping_education(df.name)
+
+    #df.drop('name', axis=1, inplace=True)
 
     return df.to_csv(file,  index=False)
 
-webscraping(df, 'web')
+webscraping('web')

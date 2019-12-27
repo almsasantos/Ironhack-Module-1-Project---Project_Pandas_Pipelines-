@@ -18,4 +18,4 @@ def reading_csv(acquisition_file):
 
 acquisition('df_acquisition')
 
-print(reading_csv('df_acquisition'))
+reading_csv('df_acquisition')
