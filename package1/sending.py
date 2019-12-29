@@ -1,4 +1,3 @@
-import re
 import os
 import smtplib
 from email.mime.text import MIMEText
@@ -6,10 +5,7 @@ from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 import os.path
 import email
-
-from dotenv import load_dotenv, find_dotenv
-from os import listdir
-from os.path import isfile, join
+import glob
 
 
 def sending_email():
@@ -57,9 +53,10 @@ def sending_email():
         image = MIMEImage(img_data, name=os.path.basename('results.png'))
         msg.attach(image)
 
-        if os.path.exists('../data/results/results.jpg'):
-            img_data1 = open('../data/results/results.jpg', 'rb').read()
-            image1 = MIMEImage(img_data1, name=os.path.basename('results.jpg'))
+        image_path = ''.join(glob.glob('../data/results/*.jpg'))
+        if os.path.exists(image_path):
+            img_data1 = open(image_path, 'rb').read()
+            image1 = MIMEImage(img_data1, name=os.path.basename(image_path))
             msg.attach(image1)
 
         server.sendmail(msg['From'], msg['To'], msg.as_string())

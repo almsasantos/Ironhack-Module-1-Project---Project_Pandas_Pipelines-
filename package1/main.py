@@ -7,15 +7,18 @@ import matplotlib
 from time import sleep
 from sending import sending_email
 import urllib.request
+import os
+import glob
 
 def extra_analysis(file):
     print('Would you like to do an extra analysis of the billionaires list and check who occupies a specific position?')
     extra_analysis_answer = input('Write "Y" for Yes and "N" for No: ').upper().strip()
     if extra_analysis_answer == 'Y':
         num_position = int(input("From 0 to 2207, choose a number to see who's billionaire occupies that position: "))
-        urllib.request.urlretrieve(df['image'][num_position], "../data/results/results.jpg")
+        urllib.request.urlretrieve(df['image'][num_position], f"../data/results/{df['name'][num_position]}.jpg")
     else:
         pass
+
 
 def main():
     print('Prepare yourself for an analysis of the billionaires of 2018:')
@@ -55,8 +58,16 @@ def main():
             type_of_analysis = int(input('Choose from 1 to 5 what would you like to know about the billionaires of 2018? '))
 
 
+def clear_results():
+    # This function will remove all files .jpg, so once you decide to execute the code all works out perfectly
+    files = glob.glob('../data/results/*.jpg')
+    for f in files:
+        os.remove(f)
+
+
 if __name__ == '__main__':
     main()
     df = pd.read_csv('df')
     extra_analysis('df')
     sending_email()
+    clear_results()
