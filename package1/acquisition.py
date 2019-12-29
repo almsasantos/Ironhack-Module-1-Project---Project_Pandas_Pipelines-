@@ -9,13 +9,10 @@ def acquisition(file):
     personal_info = pd.read_sql_table('personal_info', con=eng)
     rank_info = pd.read_sql_table('rank_info', con=eng)
     df = pd.merge(pd.merge(business_info, personal_info, on='id'), rank_info, on='id')
-    df.to_csv(file)
+    return df.to_csv(file)
 
-def reading_csv(acquisition_file):
-    print('Reading csv file ...')
-    df = pd.read_csv(acquisition_file)
+def reading_csv(df):
+    df = pd.read_csv(df)
     return df
 
-acquisition('df_acquisition')
-
-reading_csv('df_acquisition')
+acquisition('df')

@@ -3,7 +3,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
-df = pd.read_csv('web')
+df = pd.read_csv('df')
 
 colors = ['burlywood', 'yellowgreen', 'gold', 'r', 'orangered', 'mediumvioletred', 'skyblue', 'navy', 'grey', 'black']
 
@@ -23,7 +23,7 @@ def male_female_ratio(df):
     # In this case we will represent that variable in a pie chart:
     gender = ['Male', 'Female']
     colors = ['skyblue', 'hotpink']
-    male_female_ratio.plot(kind='pie', labels = gender, colors = colors, startangle=90, shadow=True, figsize=(20,10),  autopct='%.2f')
+    male_female_ratio.plot(kind='pie', labels = gender, colors = colors, startangle=90, shadow=True, figsize=(20,10),  autopct='%.2f%%')
     plt.title('Male-Female ratio based on the total of dollares')
     return plt.savefig('../data/results/results.png')
 
@@ -44,4 +44,11 @@ def profitable_work_field(df):
     plt.xlabel('Work field (Top 15)')
     plt.ylabel('Billions of dollars')
     plt.title('Top 10 most profitable fields of work')
+    return plt.savefig('../data/results/results.png')
+
+def education_ratio(df):
+    edu_pie = df.education.value_counts()
+    edu = ['No', 'Yes']
+    edu_pie.plot(kind='pie', labels = edu, colors = colors, startangle=90, shadow=True, figsize=(20,10),  autopct='%.2f%%')
+    plt.title('Percentage of billionaires who have studies')
     return plt.savefig('../data/results/results.png')

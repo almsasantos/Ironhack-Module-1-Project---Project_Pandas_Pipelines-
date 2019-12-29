@@ -3,33 +3,29 @@ import re
 import pandas as pd
 import numpy as np
 import datetime
-from acquisition import reading_csv
-# This next library is used so that warnings of changed dataframe don't appear on screen:
+import acquisition
+# This next library is used so that warnings of changed DataFrame don't appear on screen:
 import warnings
 warnings.filterwarnings('ignore')
 
-#call function reading_csv
 
 def drop_cols(df, lst):
-    print('Dropped columns')
     for i in lst:
         df.drop(i, axis=1, inplace=True)
     return df
 
 def clean_numcols_from_text(df, dic):
-    print('cleaned text from numeric columns')
     for k, v in dic.items():
         df[k] = df[k].str.replace(v, '')
     return df
 
 def column_title(df, lst):
-    print('title type text')
     for i in lst:
         df.update(df[i].str.title())
     return df
 
 def change_china_billionaires_names(df):
-    # Since names from china were wrong
+    # Since names from china were wrong, their first name was in the last_name column and their last name was in the first_name column
     count = -1
     df['change_name'] = np.nan
     for i in df['country']:
@@ -61,8 +57,7 @@ def save_csv_file(df, file):
     return df.to_csv(file, index=False)
 
 def cleaning(file):
-    df = reading_csv('df_acquisition')
-
+    df = acquisition.reading_csv('df')
     df[['work_field', 'company']] = df['Source'].str.split(' ==> ', expand=True)
 
     clean_text = {'worth': ' BUSD', 'worthChange': ' millions USD', 'age': ' years old'}
@@ -70,18 +65,14 @@ def cleaning(file):
 
     ls_cols = ['name', 'lastName', 'company']
     column_title(df, ls_cols)
-    print('clean_numcols_from_text')
 
     df = df.rename(columns={'name': 'first_name', 'lastName': 'last_name', 'realTimePosition': 'real_time_position', 'worth': 'worth(BUSD)', 'worthChange': 'worth(millions_USD)'})
-    print('renamed cols')
 
     # Since we had the first and last name in the column name, with the following code we have only the first
     # name in the column name and the last name in the column lastName
     df['first_name'] = [a.replace(b, '').strip() for a, b in zip(df['first_name'], df['last_name'])]
-    print('first and last names')
 
     change_china_billionaires_names(df)
-    print('china names changed')
 
     # Transform all ages to correct numbers:
     df.age.fillna(str(-2019), inplace=True)
@@ -104,9 +95,9 @@ def cleaning(file):
     # by the scraped data.
     df['name'] = df['first_name'] + '_' + df['last_name']
     df['education'] = 'None'
-    print('almost saving file')
     df = df[['first_name', 'last_name', 'age', 'gender', 'country', 'education', 'real_time_position', 'worth(BUSD)', 'worth(millions_USD)', 'work_field', 'company', 'image', 'name']]
 
     return save_csv_file(df, file)
 
+cleaning('df')
 
